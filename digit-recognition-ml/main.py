@@ -3,7 +3,6 @@ import tkinter as tk
 from datetime import datetime
 
 import numpy as np
-import win32gui  # pywin32
 from PIL import Image, ImageGrab  # Pillow
 from sklearn.neighbors import KNeighborsClassifier  # scikit-learn
 
@@ -77,21 +76,23 @@ class App(tk.Tk):
     def clear_all(self):
         self.canvas.delete("all")
 
+    def get_canvas_image(self) -> Image:
+        x = self.winfo_rootx() + self.canvas.winfo_x()
+        y = self.winfo_rooty() + self.canvas.winfo_y()
+        x1 = x + self.canvas.winfo_width()
+        y1 = y + self.canvas.winfo_height()
+        return ImageGrab.grab().crop((x, y, x1, y1))
+
     def classify_handwriting(self):
-        HWND = self.canvas.winfo_id()  # get the handle of the canvas
-        rect = win32gui.GetWindowRect(HWND)  # get the coordinate of the canvas
-        im = ImageGrab.grab(rect)
+        im = self.get_canvas_image()
         digit = predict_digit(im)
         self.label.configure(text=str(digit))
 
     def save_to_file(self):
         folder = "imgs"
         filename = datetime.today().strftime("%d-%m-%Y %Hh%Mm%Ss") + ".png"
-        x = self.winfo_rootx() + self.canvas.winfo_x()
-        y = self.winfo_rooty() + self.canvas.winfo_y()
-        x1 = x + self.canvas.winfo_width()
-        y1 = y + self.canvas.winfo_height()
-        ImageGrab.grab().crop((x, y, x1, y1)).save(os.path.join(folder, filename))
+        im = self.get_canvas_image()
+        im.save(os.path.join(folder, filename))
 
     def draw_lines(self, event):
         self.x = event.x

@@ -37,7 +37,6 @@ def predict_digit(img):
     img = np.invert(img)
     img = img / 255
     x_train, y_train = read_digits()
-    x_train = x_train / 255
     model = KNeighborsClassifier(n_neighbors=3, p=1)
     model.fit(x_train, y_train)
     y_pred = model.predict([img])[0]
@@ -55,12 +54,18 @@ class App(tk.Tk):
             bg="white",
             cursor="cross",
         )
-        self.label = tk.Label(self, text="?", font=("Helvetica", Settings.FONTSIZE))
+        self.label = tk.Label(
+            self, text="?", font=("Helvetica", Settings.FONTSIZE)
+        )
         self.classify_button = tk.Button(
             self, text="Recognize", command=self.classify_handwriting
         )
-        self.clear_button = tk.Button(self, text="Clear", command=self.clear_all)
-        self.save_button = tk.Button(self, text="Save", command=self.save_to_file)
+        self.clear_button = tk.Button(
+            self, text="Clear", command=self.clear_all
+        )
+        self.save_button = tk.Button(
+            self, text="Save", command=self.save_to_file
+        )
         self.canvas.grid(
             row=0,
             column=0,

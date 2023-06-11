@@ -1,3 +1,6 @@
+"""Ten plik liczy dokładność dla danych z bazy MNIST, czyli w sumie jest
+bezużyteczny xd."""
+
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier

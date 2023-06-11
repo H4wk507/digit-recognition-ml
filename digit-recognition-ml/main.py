@@ -5,6 +5,7 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageGrab  # Pillow
 from sklearn.neighbors import KNeighborsClassifier  # scikit-learn
+from sklearn.naive_bayes import GaussianNB
 
 
 class Settings:
@@ -38,6 +39,7 @@ def predict_digit(img):
     img = img / 255
     x_train, y_train = read_digits()
     model = KNeighborsClassifier(n_neighbors=3, p=1)
+    # model = GaussianNB()
     model.fit(x_train, y_train)
     y_pred = model.predict([img])[0]
     return y_pred

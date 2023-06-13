@@ -80,32 +80,45 @@
 \setlength{\topmargin}{0cm}
 \setlength{\headheight}{0cm}
 
+% TODO: wjebać cały ten plik na jakiś ortograf.pl
 \begin{document}
-	
-	\title{Nazwa Przedmiotu\\\small{dokumentacja projektu XYZ}}
-	\author{Imię Nazwisko, grupa XYZ}
+
+	\title{Systemy Sztucznej Inteligencji\\\small
+    {Dokumentacja projektu\\Porównanie algorytmu KNN oraz 
+        Naiwnego Klasyfikatora Bayesa przy klasyfikacji odręcznie pisanych cyfr.}}
+    \author{Piotr Skowroński gr. 3, Krzysztof Czuba gr. 4, Jakub Poreda gr. 3}
 	\date{\today}
 
 	\maketitle
 	\newpage
 	\section*{Część I}
 	\subsection*{Opis programu}
-	Treść zadania.
+    Celem zadania jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Program jest prostą aplikacją okienkową,
+    która pozwala użytkownikowi narysowanie cyfry na ekranie, a następnie po wciśnięciu przycisku 'Recognize' program
+    klasyfikuje cyfrę za pomocą jednego z klasyfikatorów. Program wyświetla wyniki klasyfikacji w bloku po prawej stronie.
 	\subsection*{Instrukcja obsługi}
-	Jak uruchomić program, jak wyglądają dane. Mile widziana wizualizacja gry, wyników z punku widzenia aplikacji itd. 
+    Program można uruchomić z poziomu konsoli lub IDE. Po uruchomieniu programu wyświetla się główne okno programu.
+    Dane na podstawie których program klasyfikuje cyfry są zapisane w katalogu 'imgs'.
+    % TODO: dodać screeny z poziomu aplikacji
+	%Jak uruchomić program, jak wyglądają dane. Mile widziana wizualizacja gry, wyników z punku widzenia aplikacji itd. 
 	\subsection*{Dodatkowe informacje}
-	Wymagania itd.
+    Wymagania:
+    Python 3.11\\
+    Program korzysta z następujacych zewnętrznych bibliotek:\\
+    - Pillow\\
+       \indent - Do transformacji zapisanych obrazów na znormalizowaną macierz od 0 do 1.\\
+       \indent - Do transformacji narysowanej cyfry na znormalizowaną macierz od 0 do 1.\\
+    - numpy\\
+    - scikit-learn % TODO: to wyjebać?
+    % Wymagania itd.
 	\newpage
 	\section*{Część II}
 	\subsection*{Opis działania} 
 	Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
 	dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. Dla zadania związanego z kombinatoryką opisujemy całą teorię kombinatoryczną potrzebną do zrozumienia zadania (mile widziany przykład obliczeniowy).
-	
-	
-	
+
 	\subsection*{Algorytm}
 	Tutaj opisujemy rozwiązanie zadania. Dla przedmiotu programowanie będzie to wykorzystanie matematyki z poprzedniego zadania itd. Dla SSI będzie to ogólne działanie przetwarzania danych w oparciu o modele matematyczne z poprzedniego zadania. 
-	
 	
 	Pseudokod tworzymy w \LaTeX. Przykład:\\
 	\begin{algorithm}[H]
@@ -139,7 +152,7 @@
 	Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
 	
 	\subsection*{Eksperymenty}
-	Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiery.
+	Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
 	
 	Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
 	

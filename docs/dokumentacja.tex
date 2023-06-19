@@ -114,8 +114,21 @@
 	\newpage
 	\section*{Część II}
 	\subsection*{Opis działania} 
-	Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
-	dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. Dla zadania związanego z kombinatoryką opisujemy całą teorię kombinatoryczną potrzebną do zrozumienia zadania (mile widziany przykład obliczeniowy).
+    % Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
+	% dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. Dla zadania związanego z kombinatoryką opisujemy całą teorię kombinatoryczną potrzebną do zrozumienia zadania (mile widziany przykład obliczeniowy).
+    Wartości obrazu są konwertowane na skalę szarości oraz normalizowane co ułatwia modelowi dopasowanie cyfr.
+
+    \[
+            z=\frac{x-\mu}{\sigma}
+    \]
+
+    Następnie przechodzimy do fazy uczenia, gdzie model otrzymuje nasze dane treningowe. Model wykorzystując klasyfikator KNN, umieszcza w przestrzeni metrycznej cech wartości pikseli cyfr z zestawu treningowego. Wykorzstuje metrykę odległości Manhattan mierzy on sumę bezwzględnych różnic pomiędzy cechami
+
+    \[
+        d_{n}=\Sigma^{n}_{i=0}|wektor1_{i}-wektor2_{i}|
+    \]
+
+    Przewidywanie odbywa się poprzez wybranie trzech cyfr z zbioru treningowego, których cechy różnią się najmniej od cech sprawdzanego rysunku. Wybór odbywa się poprzez znalezienie dominującej spośród wybranych cyfr
 
 	\subsection*{Algorytm}
 	Tutaj opisujemy rozwiązanie zadania. Dla przedmiotu programowanie będzie to wykorzystanie matematyki z poprzedniego zadania itd. Dla SSI będzie to ogólne działanie przetwarzania danych w oparciu o modele matematyczne z poprzedniego zadania. 
@@ -143,11 +156,23 @@
 	
 	Strukturę bazy i relacje.
 	\subsection*{Implementacja}
-	Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie	funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
-	\begin{lstlisting}
-	Tutaj wklejamy fragment kodu, ktory chcemy opisac 
-	(bez polskich znakow).
-	\end{lstlisting}
+	% Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie	funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
+    \begin{enumerate}
+        \item Program składa się z statycznej klasy przechowującej ustawienia, 
+        \item Funkcji zamieniającej obrazy na wektory
+        \item Funkcji przewidującej cyfry
+        \item Widgeta Tkintera
+    \end{enumerate}
+    
+    Widget wyświetla UI, a na nim canvas po którym użytkownik może pisać.
+    Użytkownik bazgrze po nim i klika przycisk z napisem Recognize. Rysunek jest pobierany i serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
+    
+    \[ Tu mogło by wejść zdjęcie aplikacji \]
+
+	% \begin{lstlisting}
+	% Tutaj wklejamy fragment kodu, ktory chcemy opisac 
+	% (bez polskich znakow).
+	% \end{lstlisting}
 	\subsection*{Testy}
 	Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
 	

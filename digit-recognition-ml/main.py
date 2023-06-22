@@ -5,30 +5,12 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageGrab  # Pillow
 from sklearn.neighbors import KNeighborsClassifier  # scikit-learn
-from sklearn.naive_bayes import GaussianNB
+from utils import read_digits
 
 
 class Settings:
     WIDTH = HEIGHT = 300
     FONTSIZE = 20
-
-
-def read_digits():
-    x_train = []
-    y_train = []
-    for subdir, _, files in os.walk("imgs"):
-        for file in files:
-            label = subdir[-1]
-            filepath = subdir + os.sep + file
-            img = Image.open(filepath)
-            img = img.resize((28, 28))
-            img = img.convert("L")
-            img = np.array(img).flatten()
-            img = np.invert(img)
-            img = img / 255
-            x_train.append(img)
-            y_train.append(label)
-    return np.array(x_train), np.array(y_train)
 
 
 def predict_digit(img):
@@ -37,9 +19,9 @@ def predict_digit(img):
     img = np.array(img).flatten()
     img = np.invert(img)
     img = img / 255
-    x_train, y_train = read_digits()
+    x_train, y_train = read_digits("imgs")
+    x_train = x_train / 255
     model = KNeighborsClassifier(n_neighbors=3, p=1)
-    # model = GaussianNB()
     model.fit(x_train, y_train)
     y_pred = model.predict([img])[0]
     return y_pred

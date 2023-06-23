@@ -30,6 +30,7 @@ def predict_digit(img):
 class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+        tk.Tk.title(self, "Rozpoznawanie cyfr")
         self.x = self.y = 0
         self.canvas = tk.Canvas(
             self,
@@ -42,13 +43,13 @@ class App(tk.Tk):
             self, text="?", font=("Helvetica", Settings.FONTSIZE)
         )
         self.classify_button = tk.Button(
-            self, text="Recognize", command=self.classify_handwriting
+            self, text="Rozpoznaj", command=self.classify_handwriting
         )
         self.clear_button = tk.Button(
-            self, text="Clear", command=self.clear_all
+            self, text="Wyczyść", command=self.clear_all
         )
         self.save_button = tk.Button(
-            self, text="Save", command=self.save_to_file
+            self, text="Zapisz", command=self.save_to_file
         )
         self.canvas.grid(
             row=0,

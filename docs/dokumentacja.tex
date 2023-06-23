@@ -6,6 +6,8 @@
 \usepackage{url}
 \usepackage[]{algorithm2e}
 \usepackage{listings}
+\usepackage{graphicx}
+
 
 \usepackage{color}
 \usepackage{listings}
@@ -84,45 +86,65 @@
 \begin{document}
 
 	\title{Systemy Sztucznej Inteligencji\\\small
-    {Dokumentacja projektu\\Porównanie algorytmu KNN oraz 
+    {Dokumentacja Projektu\\Porównanie algorytmu KNN oraz 
         Naiwnego Klasyfikatora Bayesa przy klasyfikacji odręcznie pisanych cyfr.}}
-    \author{Piotr Skowroński gr. 3, Krzysztof Czuba gr. 4, Jakub Poreda gr. 3}
+    \author{Piotr Skowroński gr. 3/6\\Krzysztof Czuba gr. 4/7\\Jakub Poreda gr. 3/6}
 	\date{\today}
 
 	\maketitle
 	\newpage
 	\section*{Część I}
 	\subsection*{Opis programu}
-    Celem zadania jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Program jest prostą aplikacją okienkową,
-    która pozwala użytkownikowi narysowanie cyfry na ekranie, a następnie po wciśnięciu przycisku 'Recognize' program
-    klasyfikuje cyfrę za pomocą jednego z klasyfikatorów. Program wyświetla wyniki klasyfikacji w bloku po prawej stronie.
-	\subsection*{Instrukcja obsługi}
-    Program można uruchomić z poziomu konsoli lub IDE. Po uruchomieniu programu wyświetla się główne okno programu.
-    Dane na podstawie których program klasyfikuje cyfry są zapisane w katalogu 'imgs'.
-    % TODO: dodać screeny z poziomu aplikacji
+    Celem programu jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Aplikacja zawiera proste GUI,
+    które pozwala użytkownikowi narysować cyfrę na płótnie, a następnie po wciśnięciu przycisku 'Rozpoznaj' program
+    klasyfikuje cyfrę za pomocą jednego z klasyfikatorów w celu rozpoznania narysowanej cyfry. Otrzymane wyniki 
+	klasyfikacji są wyświetlane w bloku po prawej stronie interfejsu użytkownika.
+	\begin{figure}[!h]
+		\includegraphics{"app1.png"}
+		\centering
+		\caption{Wygląd aplikacji}
+	\end{figure}
+	\newpage
+	\begin{figure}[!h]
+		\includegraphics{"app2.png"}
+		\centering
+		\caption{Rozpoznawanie}
+	\end{figure}
 	%Jak uruchomić program, jak wyglądają dane. Mile widziana wizualizacja gry, wyników z punku widzenia aplikacji itd. 
 	\subsection*{Dodatkowe informacje}
     Wymagania:
     Python 3.11\\
     Program korzysta z następujacych zewnętrznych bibliotek:\\
     - Pillow\\
-       \indent - Do transformacji zapisanych obrazów na znormalizowaną macierz od 0 do 1.\\
-       \indent - Do transformacji narysowanej cyfry na znormalizowaną macierz od 0 do 1.\\
+       \indent - Do transformacji zapisanych cyfr na macierz\\
+       \indent - Do transformacji narysowanej cyfry na macierz\\
     - numpy\\
-    - scikit-learn % TODO: to wyjebać?
+	- scipy
     % Wymagania itd.
 	\newpage
 	\section*{Część II}
 	\subsection*{Opis działania} 
     % Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
-	% dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. Dla zadania związanego z kombinatoryką opisujemy całą teorię kombinatoryczną potrzebną do zrozumienia zadania (mile widziany przykład obliczeniowy).
-    Wartości obrazu są konwertowane na skalę szarości oraz normalizowane co ułatwia modelowi dopasowanie cyfr.
-
+	% dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. 
+	% mile widziany przykład obliczeniowy).
+    Piksele wczytanego obrazu są konwertowane na skalę szarości tj. 0 - kolor biały, 255 - kolor czarny
+	oraz są normalizowane do przedziału od 0 do 1 co ułatwia modelowi dopasowanie cyfr.
+	Wzór na normalizację pojedyńczego piksela:
     \[
-            z=\frac{x-\mu}{\sigma}
+            z_i=\frac{x_i - min(x)}{max(x) - min(x)}
     \]
+	gdzie: \\
+	$z_i$ - znormalizowany piksel\\
+	$x_i$ - piksel\\
+	$x$ - zbiór wszystkich pikseli\\
+	Ostatecznie:
+	\[
+		z_i=\frac{x_i}{255}
+	\]
 
-    Następnie przechodzimy do fazy uczenia, gdzie model otrzymuje nasze dane treningowe. Model wykorzystując klasyfikator KNN, umieszcza w przestrzeni metrycznej cech wartości pikseli cyfr z zestawu treningowego. Wykorzstuje metrykę odległości Manhattan mierzy on sumę bezwzględnych różnic pomiędzy cechami
+    Następnie przechodzimy do fazy uczenia, gdzie model otrzymuje nasze dane treningowe. 
+	Model wykorzystując klasyfikator KNN, umieszcza w przestrzeni metrycznej cech wartości pikseli cyfr 
+	z zestawu treningowego. Wykorzstuje metrykę odległości Manhattan mierzy on sumę bezwzględnych różnic pomiędzy cechami
 
     \[
         d_{n}=\Sigma^{n}_{i=0}|wektor1_{i}-wektor2_{i}|
@@ -150,13 +172,13 @@
 	\end{algorithm}
 
 	\subsection*{Bazy danych}
-	Sekcja wystepuje tylko w przypadku projektów bazodanowych.
-	
-	Należy pokazać przykładowe dane, które były wykorzystywane podczas uczenia klasyfikatorów.
-	
-	Strukturę bazy i relacje.
+	% Należy pokazać przykładowe dane, które były wykorzystywane podczas uczenia klasyfikatorów.
+	Baza danych składa się z 628 obrazów cyfr narysowanych przez nas. Każdy piksel obrazu jest reprezentowany w skali
+	szarości (ma wartość od 0 do 255, gdzie 0 to biały, a 255 to czarny kolor). Obrazy są w formacie png.
+	% TODO: dać przykładowy obraz i przykładowy zresizowany obraz 
 	\subsection*{Implementacja}
-	% Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie	funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
+	% Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie 
+	% funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
     \begin{enumerate}
         \item Program składa się z statycznej klasy przechowującej ustawienia, 
         \item Funkcji zamieniającej obrazy na wektory
@@ -164,24 +186,35 @@
         \item Widgeta Tkintera
     \end{enumerate}
     
-    Widget wyświetla UI, a na nim canvas po którym użytkownik może pisać.
-    Użytkownik bazgrze po nim i klika przycisk z napisem Recognize. Rysunek jest pobierany i serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
-    
-    \[ Tu mogło by wejść zdjęcie aplikacji \]
-
+    Widget wyświetla UI, a na nim płótno po którym użytkownik może pisać.
+    Użytkownik bazgrze po nim i klika przycisk z napisem 'Rozpoznaj'. Rysunek jest pobierany i 
+	serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej 
+	rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
 	% \begin{lstlisting}
 	% Tutaj wklejamy fragment kodu, ktory chcemy opisac 
 	% (bez polskich znakow).
 	% \end{lstlisting}
 	\subsection*{Testy}
 	Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
-	
 	\subsection*{Eksperymenty}
-	Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
-	
-	Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
-	
-	Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
+	\begin{figure}[!htb]
+		\includegraphics[height=5cm]{"knn1.png"}
+		\centering
+		\caption{p=1}
+	\end{figure}
+	\begin{figure}[!htb]
+		\includegraphics[height=5cm]{"knn2.png"}
+		\centering
+		\caption{p=2}
+	\end{figure}
+	\begin{figure}[!htb]
+		\includegraphics{"knn3.png"}
+		\centering
+		\caption{p=3}
+	\end{figure}
+	% Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
+	% Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
+	% Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
 	\newpage
 	\section*{Pełen kod aplikacji}
 \begin{lstlisting}

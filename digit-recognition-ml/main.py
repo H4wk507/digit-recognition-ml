@@ -21,7 +21,7 @@ def predict_digit(img):
     img = img / 255
     x_train, y_train = read_digits("imgs")
     x_train = x_train / 255
-    model = KNeighborsClassifier(n_neighbors=3, p=1)
+    model = KNeighborsClassifier(n_neighbors=1, p=3)
     model.fit(x_train, y_train)
     y_pred = model.predict([img])[0]
     return y_pred

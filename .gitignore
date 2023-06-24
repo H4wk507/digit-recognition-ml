@@ -6,3 +6,7 @@ mnist_train.csv
 *.aux
 *.log
 *.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+

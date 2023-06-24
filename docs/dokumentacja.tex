@@ -85,138 +85,172 @@
 % TODO: wjebać cały ten plik na jakiś ortograf.pl
 \begin{document}
 
-	\title{Systemy Sztucznej Inteligencji\\\small
-    {Dokumentacja Projektu\\Porównanie algorytmu KNN oraz 
-        Naiwnego Klasyfikatora Bayesa przy klasyfikacji odręcznie pisanych cyfr.}}
-    \author{Piotr Skowroński gr. 3/6\\Krzysztof Czuba gr. 4/7\\Jakub Poreda gr. 3/6}
-	\date{\today}
+\title{Systemy Sztucznej Inteligencji\\\small
+	{Dokumentacja Projektu\\Porównanie algorytmu KNN oraz
+		Naiwnego Klasyfikatora Bayesa przy klasyfikacji odręcznie pisanych cyfr.}}
+\author{Piotr Skowroński gr. 3/6\\Krzysztof Czuba gr. 4/7\\Jakub Poreda gr. 3/6}
+\date{\today}
 
-	\maketitle
-	\newpage
-	\section*{Część I}
-	\subsection*{Opis programu}
-    Celem programu jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Aplikacja zawiera proste GUI,
-    które pozwala użytkownikowi narysować cyfrę na płótnie, a następnie po wciśnięciu przycisku 'Rozpoznaj' program
-    klasyfikuje cyfrę za pomocą jednego z klasyfikatorów w celu rozpoznania narysowanej cyfry. Otrzymane wyniki 
-	klasyfikacji są wyświetlane w bloku po prawej stronie interfejsu użytkownika.
-	\begin{figure}[!h]
-		\includegraphics{"app1.png"}
-		\centering
-		\caption{Wygląd aplikacji}
-	\end{figure}
-	\newpage
-	\begin{figure}[!h]
-		\includegraphics{"app2.png"}
-		\centering
-		\caption{Rozpoznawanie}
-	\end{figure}
-	%Jak uruchomić program, jak wyglądają dane. Mile widziana wizualizacja gry, wyników z punku widzenia aplikacji itd. 
-	\subsection*{Dodatkowe informacje}
-    Wymagania:
-    Python 3.11\\
-    Program korzysta z następujacych zewnętrznych bibliotek:\\
-    - Pillow\\
-       \indent - Do transformacji zapisanych cyfr na macierz\\
-       \indent - Do transformacji narysowanej cyfry na macierz\\
-    - numpy\\
-	- scipy
-    % Wymagania itd.
-	\newpage
-	\section*{Część II}
-	\subsection*{Opis działania} 
-    % Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
-	% dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. 
-	% mile widziany przykład obliczeniowy).
-    Piksele wczytanego obrazu są konwertowane na skalę szarości tj. 0 - kolor biały, 255 - kolor czarny
-	oraz są normalizowane do przedziału od 0 do 1 co ułatwia modelowi dopasowanie cyfr.
-	Wzór na normalizację pojedyńczego piksela:
-    \[
-            z_i=\frac{x_i - min(x)}{max(x) - min(x)}
-    \]
-	gdzie: \\
-	$z_i$ - znormalizowany piksel\\
-	$x_i$ - piksel\\
-	$x$ - zbiór wszystkich pikseli\\
-	Ostatecznie:
-	\[
-		z_i=\frac{x_i}{255}
-	\]
+\maketitle
+\newpage
+\section*{Część I}
+\subsection*{Opis programu}
+Celem programu jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Aplikacja zawiera proste GUI,
+które pozwala użytkownikowi narysować cyfrę na płótnie, a następnie po wciśnięciu przycisku 'Rozpoznaj' program
+klasyfikuje cyfrę za pomocą jednego z klasyfikatorów w celu rozpoznania narysowanej cyfry. Otrzymane wyniki
+klasyfikacji są wyświetlane w bloku po prawej stronie interfejsu użytkownika.
+\begin{figure}[!h]
+	\includegraphics{"app1.png"}
+	\centering
+	\caption{Wygląd aplikacji}
+\end{figure}
+\newpage
+\begin{figure}[!h]
+	\includegraphics{"app2.png"}
+	\centering
+	\caption{Rozpoznawanie}
+\end{figure}
+\subsection*{Dodatkowe informacje}
+Wymagania:
+Python 3.11\\
+Program korzysta z następujacych zewnętrznych bibliotek:\\
+- Pillow\\
+\indent - Do transformacji zapisanych cyfr na macierz\\
+\indent - Do transformacji narysowanej cyfry na macierz\\
+- numpy\\
+- scipy
+\newpage
+\section*{Część II}
+\subsection*{Opis działania}
+% Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
+% dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. 
+% mile widziany przykład obliczeniowy).
+Piksele wczytanego obrazu są konwertowane na skalę szarości tj. 0 - kolor biały, 255 - kolor czarny
+oraz są normalizowane do przedziału od 0 do 1 co ułatwia modelowi dopasowanie cyfr.
+Wzór na normalizację pojedyńczego piksela:
+\[
+	z_i=\frac{x_i - min(x)}{max(x) - min(x)}
+\]
+gdzie: \\
+\indent $z_i$ - znormalizowany piksel\\
+\indent $x_i$ - piksel\\
+\indent $x$ - zbiór wszystkich pikseli\\~\\
+Ostatecznie wzór ma postać:
+\[
+	z_i=\frac{x_i}{255}
+\]
+\subsubsection*{Algorytm k najbliższych sąsiadów}
+Klasyfikator kNN to jedna z ważniejszych nieparametrycznych metod klasyfikacji. W tej metodzie
+klasyfikowany obiekt przydzielamy do tej klasy, do której należy większość z k sąsiadów.
+\begin{figure}[!h]
+	\includegraphics{"KnnClassification.png"}
+	\centering
+	\caption{Przykład klasyfikacji metodą kNN}
+\end{figure}
 
-    Następnie przechodzimy do fazy uczenia, gdzie model otrzymuje nasze dane treningowe. 
-	Model wykorzystując klasyfikator KNN, umieszcza w przestrzeni metrycznej cech wartości pikseli cyfr 
-	z zestawu treningowego. Wykorzstuje metrykę odległości Manhattan mierzy on sumę bezwzględnych różnic pomiędzy cechami
+W przypadku k=3 (mniejszy okrąg), zielona kropka zostanie zakwalifikowana do czerwonych
+trójkątów. W przypadku k=5 (większy okrąg) - do niebieskich kwadratów.
 
-    \[
-        d_{n}=\Sigma^{n}_{i=0}|wektor1_{i}-wektor2_{i}|
-    \]
+%Następnie przechodzimy do fazy uczenia, gdzie model otrzymuje nasze dane treningowe.
+%Model wykorzystując klasyfikator KNN, umieszcza w przestrzeni metrycznej wartości pikseli cyfr
+%z zestawu treningowego. Wykorzstuje metrykę odległości Manhattan mierzy on sumę bezwzględnych różnic pomiędzy cechami
+%\[
+%	d_{n}=\Sigma^{n}_{i=0}|wektor1_{i}-wektor2_{i}|
+%\]
+%Przewidywanie odbywa się poprzez wybranie trzech cyfr z zbioru treningowego, których cechy różnią się najmniej od cech sprawdzanego rysunku. Wybór odbywa się poprzez znalezienie dominującej spośród wybranych cyfr
 
-    Przewidywanie odbywa się poprzez wybranie trzech cyfr z zbioru treningowego, których cechy różnią się najmniej od cech sprawdzanego rysunku. Wybór odbywa się poprzez znalezienie dominującej spośród wybranych cyfr
+\subsubsection*{Metryka odległości}
+Użyta została odległość Minkowskiego określona wzorem:
+\[
+	L_m(x, y) = \left(\sum_{i = 1}^{n} |x_i - y_i|^p\right)^\frac{1}{p}
+\]
+gdzie: \\
+\indent $L_m$ - odległość między punktami x i y\\
+\indent $x$, $y$ - punkty w przestrzeni $n$ wymiarowej\\
+\indent $x_i$, $y_i$ - i'ta współrzędna punktów x i y\\
+\indent $p$ - parametr określający rodzaj metryki\\
 
-	\subsection*{Algorytm}
-	Tutaj opisujemy rozwiązanie zadania. Dla przedmiotu programowanie będzie to wykorzystanie matematyki z poprzedniego zadania itd. Dla SSI będzie to ogólne działanie przetwarzania danych w oparciu o modele matematyczne z poprzedniego zadania. 
-	
-	Pseudokod tworzymy w \LaTeX. Przykład:\\
-	\begin{algorithm}[H]
-		\KwData{Dane wejściowe liczba $k$}
-		\KwResult{Brak }
-		$i:=0$\;
-		\While{$i<k$}{
-			Drukuj na ekran liczbę $i$\;
-			\eIf{$i\%2==0$}{
-				Wydrukj informację, że liczba $i$ jest liczbą parzystą\;
-			}{
-				Wydrukj informację, że liczba $i$ nie jest liczbą parzystą\;
-			}
+\noindent Przetestowaliśmy skuteczność klasyfikatora kNN dla liczby sąsiadów $k \in \{1, 3, 5, 7, 9, 11, 13, 15\}$ oraz
+dla wartości parametru $p \in \{1, 2, 3\}$.
+
+\subsection*{Pseudokod algorytmu kNN}
+% Tutaj opisujemy rozwiązanie zadania. Dla przedmiotu programowanie 
+% będzie to wykorzystanie matematyki z poprzedniego zadania itd. 
+% Dla SSI będzie to ogólne działanie przetwarzania danych w oparciu o 
+% modele matematyczne z poprzedniego zadania.
+\begin{algorithm}[H]
+	\KwData{Dane wejściowe: liczba $k$}
+	\KwResult{Brak }
+	$i:=0$\;
+	\While{$i<k$}{
+		Drukuj na ekran liczbę $i$\;
+		\eIf{$i\%2==0$}{
+			Wydrukj informację, że liczba $i$ jest liczbą parzystą\;
+		}{
+			Wydrukj informację, że liczba $i$ nie jest liczbą parzystą\;
 		}
-		\caption{Algorytm drukowania informacji o liczbie parzystej/nieprarzystej.}
-	\end{algorithm}
+	}
+	\caption{Algorytm drukowania informacji o liczbie parzystej/nieprarzystej.}
+\end{algorithm}
 
-	\subsection*{Bazy danych}
-	% Należy pokazać przykładowe dane, które były wykorzystywane podczas uczenia klasyfikatorów.
-	Baza danych składa się z 628 obrazów cyfr narysowanych przez nas. Każdy piksel obrazu jest reprezentowany w skali
-	szarości (ma wartość od 0 do 255, gdzie 0 to biały, a 255 to czarny kolor). Obrazy są w formacie png.
-	% TODO: dać przykładowy obraz i przykładowy zresizowany obraz 
-	\subsection*{Implementacja}
-	% Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie 
-	% funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
-    \begin{enumerate}
-        \item Program składa się z statycznej klasy przechowującej ustawienia, 
-        \item Funkcji zamieniającej obrazy na wektory
-        \item Funkcji przewidującej cyfry
-        \item Widgeta Tkintera
-    \end{enumerate}
-    
-    Widget wyświetla UI, a na nim płótno po którym użytkownik może pisać.
-    Użytkownik bazgrze po nim i klika przycisk z napisem 'Rozpoznaj'. Rysunek jest pobierany i 
-	serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej 
-	rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
-	% \begin{lstlisting}
-	% Tutaj wklejamy fragment kodu, ktory chcemy opisac 
-	% (bez polskich znakow).
-	% \end{lstlisting}
-	\subsection*{Testy}
-	Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
-	\subsection*{Eksperymenty}
-	\begin{figure}[!htb]
-		\includegraphics[height=5cm]{"knn1.png"}
-		\centering
-		\caption{p=1}
-	\end{figure}
-	\begin{figure}[!htb]
-		\includegraphics[height=5cm]{"knn2.png"}
-		\centering
-		\caption{p=2}
-	\end{figure}
-	\begin{figure}[!htb]
-		\includegraphics{"knn3.png"}
-		\centering
-		\caption{p=3}
-	\end{figure}
-	% Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
-	% Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
-	% Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
-	\newpage
-	\section*{Pełen kod aplikacji}
+\subsection*{Bazy danych}
+Baza danych składa się z 628 obrazów cyfr narysowanych przez nas. Każdy piksel obrazu jest reprezentowany w skali
+szarości (ma wartość od 0 do 255, gdzie 0 to biały, a 255 to czarny kolor). Obrazy są przechowywane w formacie png.
+\newpage
+\begin{figure}[!h]
+	\includegraphics[scale=0.8]{"number_example.png"}
+	\centering
+	\caption{Przykładowy obraz z bazy danych}
+\end{figure}
+\begin{figure}[!h]
+	\includegraphics[scale=8]{"normalized.png"}
+	\centering
+	\caption{Ten sam obraz po zmianie rozdzielczości na 28x28 pikseli}
+\end{figure}
+\subsection*{Implementacja}
+% Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie 
+% funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
+\begin{enumerate}
+	\item Program składa się z statycznej klasy przechowującej ustawienia,
+	\item Funkcji zamieniającej obrazy na wektory
+	\item Funkcji przewidującej cyfry
+	\item Widgeta Tkintera
+\end{enumerate}
+
+Widget wyświetla UI, a na nim płótno po którym użytkownik może pisać.
+Użytkownik bazgrze po nim i klika przycisk z napisem 'Rozpoznaj'. Rysunek jest pobierany i
+serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej
+rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
+% \begin{lstlisting}
+% Tutaj wklejamy fragment kodu, ktory chcemy opisac 
+% (bez polskich znakow).
+% \end{lstlisting}
+\subsection*{Testy}
+Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
+\subsection*{Eksperymenty}
+\begin{figure}[!h]
+	\includegraphics[scale=1]{"knn1.png"}
+	\centering
+	\caption{p=1}
+\end{figure}
+\newpage
+\begin{figure}[!h]
+	\includegraphics[scale=0.8]{"knn2.png"}
+	\centering
+	\caption{p=2}
+\end{figure}
+\begin{figure}[!h]
+	\includegraphics[scale=0.8]{"knn3.png"}
+	\centering
+	\caption{p=3}
+\end{figure}
+
+Najlepsze wyniki klasyfikator uzyskuje dla $k = 1$ oraz $p = 3$, gdzie jego dokładność wynosi 95.4\%.
+% Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
+% Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
+% Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
+\newpage
+\section*{Pełen kod aplikacji}
 \begin{lstlisting}
 Tutaj wklejamy pelen kod. 
 \end{lstlisting}

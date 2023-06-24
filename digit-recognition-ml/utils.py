@@ -2,9 +2,10 @@ from PIL import Image
 import os
 import numpy as np
 
+
 def read_digits(dirname: str):
     """Read digits' images from dirname directory.
-    Return a tuple of two lists: 
+    Return a tuple of two lists:
     - X: list of image pixels (each pixel is a number from 0 (white) to 255 (black).
     - y: list of digit labels from 0 to 9.
     Dimensions:
@@ -24,4 +25,3 @@ def read_digits(dirname: str):
             X.append(img)
             y.append(label)
     return np.array(X), np.array(y)
-

@@ -5,6 +5,9 @@ from datetime import datetime
 import numpy as np
 from PIL import Image, ImageGrab  # Pillow
 from sklearn.neighbors import KNeighborsClassifier  # scikit-learn
+
+from knn import KNN
+from bayes import NaiveBayesClassifier
 from utils import read_digits
 
 
@@ -22,8 +25,9 @@ def predict_digit(img):
     x_train, y_train = read_digits("imgs")
     x_train = x_train / 255
     model = KNeighborsClassifier(n_neighbors=1, p=3)
+    # model = KNN(k=1, p=3)
     model.fit(x_train, y_train)
-    y_pred = model.predict([img])[0]
+    y_pred = model.predict(np.array([img]))[0]
     return y_pred
 
 

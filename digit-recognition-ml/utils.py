@@ -1,6 +1,7 @@
-from PIL import Image
 import os
+
 import numpy as np
+from PIL import Image
 
 
 def read_digits(dirname: str):

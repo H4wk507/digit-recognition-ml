@@ -93,8 +93,8 @@
 
 \maketitle
 \newpage
-\section*{Część I}
-\subsection*{Opis programu}
+\section{Wstęp}
+\subsection{Opis programu}
 Celem programu jest klasyfikowanie odręcznie pisanych cyfr przez użytkownika. Aplikacja zawiera proste GUI,
 które pozwala użytkownikowi narysować cyfrę na płótnie, a następnie po wciśnięciu przycisku 'Rozpoznaj' program
 klasyfikuje cyfrę za pomocą jednego z klasyfikatorów w celu rozpoznania narysowanej cyfry. Otrzymane wyniki
@@ -110,18 +110,30 @@ klasyfikacji są wyświetlane w bloku po prawej stronie interfejsu użytkownika.
 	\centering
 	\caption{Rozpoznawanie}
 \end{figure}
-\subsection*{Dodatkowe informacje}
-Wymagania:
-Python 3.11\\
+\subsection{Użyte biblioteki}
 Program korzysta z następujacych zewnętrznych bibliotek:\\
 - Pillow\\
 \indent - Do transformacji zapisanych cyfr na macierz\\
 \indent - Do transformacji narysowanej cyfry na macierz\\
 - numpy\\
-- scipy
+- seaborn
+\subsection{Baza danych}
+Baza danych składa się z 628 obrazów cyfr narysowanych przez nas. Każdy piksel obrazu jest reprezentowany w skali
+szarości (ma wartość od 0 do 255, gdzie 0 to biały, a 255 to czarny kolor). Obrazy są przechowywane w formacie png.
 \newpage
-\section*{Część II}
-\subsection*{Opis działania}
+\begin{figure}[!h]
+	\includegraphics[scale=0.8]{"number_example.png"}
+	\centering
+	\caption{Przykładowy obraz z bazy danych}
+\end{figure}
+\begin{figure}[!h]
+	\includegraphics[scale=8]{"normalized.png"}
+	\centering
+	\caption{Ten sam obraz po zmianie rozdzielczości na 28x28 pikseli}
+\end{figure}
+\newpage
+\section{Opis działania}
+\subsection{Normalizacja danych}
 % Tutaj uwzględniamy część matematyczną. Opisujemy całą teorię np.:
 % dla zadania związanego z sieciami neuronowymi - opisujemy całą budowę, algorytm uczenia i wszystkie wzory. 
 % mile widziany przykład obliczeniowy).
@@ -139,7 +151,7 @@ Ostatecznie wzór ma postać:
 \[
 	z_i=\frac{x_i}{255}
 \]
-\subsubsection*{Algorytm k najbliższych sąsiadów}
+\subsection{Algorytm k najbliższych sąsiadów}
 Klasyfikator kNN to jedna z ważniejszych nieparametrycznych metod klasyfikacji. W tej metodzie
 klasyfikowany obiekt przydzielamy do tej klasy, do której należy większość z k sąsiadów.
 \begin{figure}[!h]
@@ -159,7 +171,7 @@ trójkątów. W przypadku k=5 (większy okrąg) - do niebieskich kwadratów.
 %\]
 %Przewidywanie odbywa się poprzez wybranie trzech cyfr z zbioru treningowego, których cechy różnią się najmniej od cech sprawdzanego rysunku. Wybór odbywa się poprzez znalezienie dominującej spośród wybranych cyfr
 
-\subsubsection*{Metryka odległości}
+\subsection{Metryka odległości}
 Użyta została odległość Minkowskiego określona wzorem:
 \[
 	L_m(x, y) = \left(\sum_{i = 1}^{n} |x_i - y_i|^p\right)^\frac{1}{p}
@@ -173,84 +185,57 @@ gdzie: \\
 \noindent Przetestowaliśmy skuteczność klasyfikatora kNN dla liczby sąsiadów $k \in \{1, 3, 5, 7, 9, 11, 13, 15\}$ oraz
 dla wartości parametru $p \in \{1, 2, 3\}$.
 
-\subsection*{Pseudokod algorytmu kNN}
+\subsection{Pseudokod algorytmu kNN}
 % Tutaj opisujemy rozwiązanie zadania. Dla przedmiotu programowanie 
 % będzie to wykorzystanie matematyki z poprzedniego zadania itd. 
 % Dla SSI będzie to ogólne działanie przetwarzania danych w oparciu o 
 % modele matematyczne z poprzedniego zadania.
 \begin{algorithm}[H]
-	\KwData{Dane wejściowe: liczba $k$}
-	\KwResult{Brak }
-	$i:=0$\;
-	\While{$i<k$}{
-		Drukuj na ekran liczbę $i$\;
-		\eIf{$i\%2==0$}{
-			Wydrukj informację, że liczba $i$ jest liczbą parzystą\;
-		}{
-			Wydrukj informację, że liczba $i$ nie jest liczbą parzystą\;
+	\KwData{Dane wejściowe: zbiór treningowy $train\_data$
+		zbiór testowy $test\_data$ liczba sąsiadów $k$ metryka $p$}
+	\KwResult{Zbiór testowy z przewidzianymi etykietami}
+	\ForEach{$test\_instance$ in $test\_data$}{
+		$distances$ = $[]$\;
+		\ForEach{$train\_instance$ in $train\_data$}{
+			$distance$ = $point\_distance(test\_instance, train\_instance, p)$\;
+			$distances.append((train\_instance, distance))$\;
 		}
+		$sorted\_distances = sort(distances, by=distance)$\;
+		$k\_nearest\_neighbors = sorted\_distances[:k]$\;
+		$test\_instance.set\_predicted\_label(predicted\_label)$\;
 	}
-	\caption{Algorytm drukowania informacji o liczbie parzystej/nieprarzystej.}
+	\Return $test\_data$\;
+	\caption{Algorytm k najbliższych sąsiadów.}
 \end{algorithm}
 
-\subsection*{Bazy danych}
-Baza danych składa się z 628 obrazów cyfr narysowanych przez nas. Każdy piksel obrazu jest reprezentowany w skali
-szarości (ma wartość od 0 do 255, gdzie 0 to biały, a 255 to czarny kolor). Obrazy są przechowywane w formacie png.
-\newpage
-\begin{figure}[!h]
-	\includegraphics[scale=0.8]{"number_example.png"}
-	\centering
-	\caption{Przykładowy obraz z bazy danych}
-\end{figure}
-\begin{figure}[!h]
-	\includegraphics[scale=8]{"normalized.png"}
-	\centering
-	\caption{Ten sam obraz po zmianie rozdzielczości na 28x28 pikseli}
-\end{figure}
-\subsection*{Implementacja}
+\subsection{Implementacja}
 % Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie 
 % funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
 \begin{enumerate}
-	\item Program składa się z statycznej klasy przechowującej ustawienia,
-	\item Funkcji zamieniającej obrazy na wektory
-	\item Funkcji przewidującej cyfry
-	\item Widgeta Tkintera
+	\item main.py - główny plik programu
+	\item knn.py - plik zawierający implementację algorytmu kNN
+	\item bayes.py - plik zawierający implementację naiwnego klasyfikatora Bayesa
+	\item utils.py - plik zawierający funkcje pomocnicze (np. wczytywanie danych)
+	\item test.py - plik zawierający funkcje testujące klasyfikatory
 \end{enumerate}
-
-Widget wyświetla UI, a na nim płótno po którym użytkownik może pisać.
-Użytkownik bazgrze po nim i klika przycisk z napisem 'Rozpoznaj'. Rysunek jest pobierany i
-serializowany do postaci odpowiadającej danym testowym. Uruchamiana jest procedura klasyfikująca, a jej
-rezultat - Dopasowana cyfra - Wyświetlany jest w GUI.
-% \begin{lstlisting}
-% Tutaj wklejamy fragment kodu, ktory chcemy opisac 
-% (bez polskich znakow).
-% \end{lstlisting}
-\subsection*{Testy}
+% TODO: dodać kod do funkcji: predict, predict_point, predict_digit
+\begin{lstlisting}
+	print("Hello world!")
+\end{lstlisting}
+\subsection{Testy}
 Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
-\subsection*{Eksperymenty}
+\subsection{Eksperymenty}
 \begin{figure}[!h]
-	\includegraphics[scale=1]{"knn1.png"}
+	\includegraphics[scale=1]{"knn.png"}
 	\centering
-	\caption{p=1}
+	\caption{Zależność dokładności klasyfikacji od liczby sąsiadów $k$ i parametru $p$}
 \end{figure}
-\newpage
-\begin{figure}[!h]
-	\includegraphics[scale=0.8]{"knn2.png"}
-	\centering
-	\caption{p=2}
-\end{figure}
-\begin{figure}[!h]
-	\includegraphics[scale=0.8]{"knn3.png"}
-	\centering
-	\caption{p=3}
-\end{figure}
-
-Najlepsze wyniki klasyfikator uzyskuje dla $k = 1$ oraz $p = 3$, gdzie jego dokładność wynosi 95.4\%.
+Najlepsze wyniki klasyfikator kNN uzyskuje dla $k = 1$ oraz $p = 3$, gdzie jego dokładność wynosi 94.9\%.
 % Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
 % Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
 % Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
 \newpage
-\section*{Pełen kod aplikacji}
+\section{Pełen kod aplikacji}
 \begin{lstlisting}
 Tutaj wklejamy pelen kod. 
 \end{lstlisting}

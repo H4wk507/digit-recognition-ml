@@ -9,4 +9,4 @@ mnist_train.csv
 *.fdb_latexmk
 *.fls
 *.synctex.gz
-
+*.toc

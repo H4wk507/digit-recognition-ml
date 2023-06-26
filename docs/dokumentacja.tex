@@ -92,6 +92,10 @@
 \date{\today}
 
 \maketitle
+
+\newpage
+\tableofcontents
+
 \newpage
 \section{Wstęp}
 \subsection{Opis programu}
@@ -208,6 +212,48 @@ dla wartości parametru $p \in \{1, 2, 3\}$.
 	\caption{Algorytm k najbliższych sąsiadów.}
 \end{algorithm}
 
+\subsection{Wyniki klasyfikatora kNN}
+Po przeanalizowaniu różnych wartości parametrów $k$ i $p$, algorytm kNN klasyfikuje cyfry
+z największą dokładnością na poziomie 94.9\% dla pary parametrów $k = 1$ i $p = 3$.
+\newpage
+\begin{figure}[!h]
+	\includegraphics[scale=0.70]{"knn.png"}
+	\centering
+	\caption{Zależność dokładności klasyfikacji od liczby sąsiadów $k$ i parametru $p$}
+\end{figure}
+\begin{figure}[!h]
+	\includegraphics[scale=0.70]{"confusion_matrix_knn.png"}
+	\centering
+	\caption{Macierz błędu algorytmu kNN dla $k = 1$ i $p = 3$}
+\end{figure}
+\subsection{Algorytm Naiwnego Bayesa}
+Klasyfikator Naiwnego Bayesa jest to klasyfikator probabilistyczny, oparty na twierdzeniu Bayesa.
+Zakłada on niezależność cech. Naiwny klasyfikator bayesowski predyktuje klasę nowego obiektu w zbiorze na podstawie
+prawdopodobieństwa warunkowego.
+\[
+	p(D_i | X_1, X_2, ..., X_n)
+\]
+gdzie:\\
+\indent $D_i$ - klasa obiektu\\
+\indent $X_1, X_2, ..., X_n$ - cechy obiektu\\~\\
+Prawdopodobieństwo wystąpienia elementu w danym zbiorze
+\[
+	p(D_i) = \frac{|D_i|}{N}
+\]
+gdzie:\\
+\indent $|D_i|$ - moc zbioru $D_i$\\
+\indent $N$ - liczba wszystkich elementów w zbiorze
+\subsection{Pseudokod algorytmu Naiwnego Bayesa}
+
+\subsection{Wyniki klasyfikatora Naiwnego Bayesa}
+Po przeprowadzeniu kilkunasu testów algorytm Naiwnego Bayesa uzyskuje dokładność
+na poziomie 88.7\%.
+\begin{figure}[!h]
+	\includegraphics[scale=0.59]{"confusion_matrix_bayes.png"}
+	\centering
+	\caption{Macierz błędu algorytmu Naiwnego Bayesa}
+\end{figure}
+
 \subsection{Implementacja}
 % Opis, zasada i działanie programu ze względu na podział na pliki, nastepnie 
 % funkcje programu wraz ze szczegółowym opisem działania (np.: formie pseudokodu, czy odniesienia do równania)
@@ -218,23 +264,108 @@ dla wartości parametru $p \in \{1, 2, 3\}$.
 	\item utils.py - plik zawierający funkcje pomocnicze (np. wczytywanie danych)
 	\item test.py - plik zawierający funkcje testujące klasyfikatory
 \end{enumerate}
-% TODO: dodać kod do funkcji: predict, predict_point, predict_digit
 \begin{lstlisting}
-	print("Hello world!")
+# Algorytm kNN
+class KNN:
+    def __init__(self, k: int = 3, p: int = 2):
+        self.k = k
+        self.p = p
+
+    @staticmethod
+    def minkowski_distance(X1, X2, p) -> float:
+        return sum([abs((a - b) ** p) for a, b in zip(X1, X2)]) ** (1 / p)
+
+    def fit(self, X, Y) -> None:
+        self.X_train = X
+        self.Y_train = Y
+
+    def predict(self, X) -> list[float]:
+        return [self.predict_point(x) for x in X]
+
+    def predict_point(self, x) -> float:
+        distances = [
+            KNN.minkowski_distance(x, x_train, self.p)
+            for x_train in self.X_train
+        ]
+        k_indices = np.argsort(distances)[: self.k]
+        k_nearest_labels = [self.Y_train[i] for i in k_indices]
+        most_common = Counter(k_nearest_labels).most_common(1)
+        return most_common[0][0]
+
+# Algorytm Naiwnego Bayesa
+class NaiveBayesClassifier:
+    def fit(self, X, y):
+        self.classes = np.unique(y)
+        self.num_classes = len(self.classes)
+        self.num_features = X.shape[1]
+        self.class_probs = np.zeros(self.num_classes)
+        self.feature_probs = np.zeros((self.num_classes, self.num_features))
+        for i, c in enumerate(self.classes):
+            X_c = X[y == c]
+            self.class_probs[i] = len(X_c) / len(X)
+            self.feature_probs[i] = np.mean(X_c, axis=0)
+
+    def predict(self, X):
+        y_pred = np.zeros(X.shape[0], dtype=np.str_)
+        for i, x in enumerate(X):
+            posterior_probs = []
+            for j in range(self.num_classes):
+                prior = np.log(self.class_probs[j])
+                likelihood = np.sum(
+                    np.log(self.compute_feature_prob(self.feature_probs[j], x))
+                )
+                posterior = prior + likelihood
+                posterior_probs.append(posterior)
+            y_pred[i] = self.classes[np.argmax(posterior_probs)]
+        return y_pred
+
+    def compute_feature_prob(self, feature_prob, x):
+        epsilon = 1e-9
+        return feature_prob * x + (1 - feature_prob) * (1 - x + epsilon)
+
+# Funkcja klasyfikujaca narysowana cyfre
+def predict_digit(img):
+    img = img.resize((28, 28))
+    img = img.convert("L")
+    img = np.array(img).flatten()
+    img = np.invert(img)
+    img = img / 255
+    x_train, y_train = read_digits("imgs")
+    x_train = x_train / 255
+    model = KNeighborsClassifier(n_neighbors=1, p=3)
+    model.fit(x_train, y_train)
+    y_pred = model.predict(np.array([img]))[0]
+    return y_pred
 \end{lstlisting}
-\subsection{Testy}
-Tutaj powinna pojawić się analiza uzyskanych wyników oraz wykresy/pomiary.
-\subsection{Eksperymenty}
-\begin{figure}[!h]
-	\includegraphics[scale=1]{"knn.png"}
-	\centering
-	\caption{Zależność dokładności klasyfikacji od liczby sąsiadów $k$ i parametru $p$}
-\end{figure}
-Najlepsze wyniki klasyfikator kNN uzyskuje dla $k = 1$ oraz $p = 3$, gdzie jego dokładność wynosi 94.9\%.
-% Sekcję używamy gdy porównywaliśmy dwa lub więcej algorytmów, albo wykonywaliśmy jakies pomiary.
-% Warto dodać jakies wykresy jako obraz, albo tabele z wynikami. 
-% Wszyskie wyniki powinny być opisane/poddane komentarzowi i poddane analizie statystycznej.
-\newpage
+\section{Wnioski}
+\subsection{Porównanie wyników klasyfikatorów}
+W badaniu porównującym algorytm kNN i naiwny klasyfikator
+bayesowski w rozpoznawaniu pisma odręcznego stwierdzono, że k-NN osiągnął lepsze
+wyniki i dokładność klasyfikacji niż naiwny klasyfikator bayesowski. Wykorzystano
+zbiór danych, który został podzielony na dane treningowe (75\%) i dane testowe (25\%),
+gdzie każda próbka była reprezentowana jako obraz 28 x 28 pikseli przedstawiający odręczne cyfry.
+Naiwny klasyfikator bayesowski uzyskał dokładność na poziomie około 88.7\%, podczas gdy kNN osiągnął
+dokładność na poziomie około 94.9\%. Wynika z tego, że k-NN
+jest bardziej skutecznym narzędziem do rozpoznawania cyfr pisma odręcznego niż naiwny klasyfikator
+bayesowski, zwłaszcza w przypadku większej liczby danych treningowych i większego wymiaru wejściowego.
+Naiwny klasyfikator bayesowski ma jednak pewne zalety, takie jak krótszy czas potrzebny na dopasowanie i
+testowanie. W porównaniu do tego, klasyfikator kNN wymagał znacznie więcej czasu. Warto jednak zauważyć,
+że k-NN może być dobrym wyborem dla mniejszych zbiorów danych i problemów o mniejszej liczbie wymiarów.
+\subsection{Potencjał rozwoju}
+
+Projekt rozpoznawania cyfr przy użyciu uczenia maszynowego ma potencjał rozwoju w wielu różnych obszarach:
+- Zwiększenie dokładności rozpoznawania: Można podjąć działania mające na celu zwiększenie dokładności
+rozpoznawania cyfr. Można eksperymentować z różnymi algorytmami uczenia maszynowego, takimi
+jak głębokie sieci neuronowe, konwolucyjne sieci neuronowe (CNN).
+
+- Rozpoznawanie innych zestawów danych: Oprócz rozpoznawania cyfr można rozważyć rozwinięcie projektu w celu
+rozpoznawania innych zestawów danych. Można badać możliwość rozpoznawania liter, symboli matematycznych
+lub innych obiektów.
+
+- Adaptacja do innych języków i pism: Projekty rozpoznawania cyfr można rozszerzyć na inne języki i pisma.
+Na przykład, można badać możliwość rozpoznawania cyfr w języku chińskim, arabskim, japońskim lub innych językach,
+które posiadają swoje własne znaki i pismo. Odpowiednie dane treningowe i dostosowanie modelu
+będą kluczowe w takim przypadku.
 \section{Pełen kod aplikacji}
 \begin{lstlisting}
 Tutaj wklejamy pelen kod. 

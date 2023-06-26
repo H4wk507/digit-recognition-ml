@@ -7,7 +7,8 @@ from PIL import Image
 def read_digits(dirname: str):
     """Read digits' images from dirname directory.
     Return a tuple of two lists:
-    - X: list of image pixels (each pixel is a number from 0 (white) to 255 (black).
+    - X: list of image pixels (each pixel is a number from
+    0 (white) to 255 (black).
     - y: list of digit labels from 0 to 9.
     Dimensions:
     - X: nsamples * 28 * 28 (each image is resized to 28x28 pixels).

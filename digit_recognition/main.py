@@ -1,14 +1,19 @@
 import os
+import sys
 import tkinter as tk
 from datetime import datetime
 
 import numpy as np
 from PIL import Image, ImageGrab  # Pillow
+from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier  # scikit-learn
 
-from knn import KNN
-from bayes import NaiveBayesClassifier
-from utils import read_digits
+DIRNAME = os.path.dirname(os.path.dirname(__file__))
+sys.path.append(DIRNAME)
+
+from digit_recognition.bayes import NaiveBayesClassifier
+from digit_recognition.knn import KNN
+from digit_recognition.utils import read_digits
 
 
 class Settings:
